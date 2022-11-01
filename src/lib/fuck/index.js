@@ -13,7 +13,11 @@ const profilePath = "../../../profile";
 const fs = require("fs");
 const path = require("path");
 
-const fhirValidator = require("../validator");
+let fhirValidator;
+if (sails.config.custom.useJavaFhirValidator) {
+  fhirValidator = require("../validator");
+}
+  
 
 class Convert {
   constructor(src, useProfile) {

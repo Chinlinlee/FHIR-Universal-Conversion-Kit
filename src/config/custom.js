@@ -23,5 +23,6 @@ module.exports.custom = {
       responseType: 'err'
     }
   },
-  cacheProfile: true
+  cacheProfile: false,
+  useJavaFhirValidator: false
 };
