@@ -2,6 +2,38 @@
 
 FHIR Universal Conversion Kit (F.U.C.K.) is a super awesome and sexy kit that can convert albitary data to HL7 FHIR data. 
 
+Modified features:
+- Config whether cache profile file
+    - Config `cacheProfile` in `src/config/custom.js`
+> The profile file may change when server running, so I add config that can delete profile cache and require profile again to refresh profile in nodejs
+
+- Validate resource in bundle after conversion
+    - Add `doValidation` in profile file, example:
+    ```js
+    module.exports.profile = {
+        // Name of the profile
+        name: 'example',
+    
+        // version of the profile
+        version: '1.0.0',
+    
+        // The base URL of the FHIR server, this field will affect the 'fullUrl' element in the generated bundle.
+        fhirServerBaseUrl: 'https://hapi.fhir.tw/fhir',     // 
+    
+        // Whether should we do after conversion?
+        // 'upload': Upload the converted data to the FHIR server and return the server response.
+        // 'return': Don't upload, just return the converted data.
+        action: 'upload',
+
+        // Whether validate resource after conversion?
+        doValidation: true
+    }
+    ```
+    - Put IG package file (package.tgz) in `lib/validator/igs`
+> Use [node-java-fhir-validator](https://github.com/Chinlinlee/node-java-fhir-validator)
+
+> ** Note **
+> Validator require jdk >= 11
 ## TODO
 - :white_check_mark: Core Engine
 - :white_check_mark: Multipule Profile (Config File) Support
