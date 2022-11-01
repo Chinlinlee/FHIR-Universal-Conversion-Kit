@@ -13,6 +13,8 @@ const profilePath = "../../../profile";
 const fs = require("fs");
 const path = require("path");
 
+const fhirValidator = require("../validator");
+
 class Convert {
   constructor(src, useProfile) {
     this.data = src;
@@ -166,6 +168,16 @@ class Convert {
       }
     }
 
+    let doValidation = Object.prototype.hasOwnProperty.call(profile.profile, "doValidation") ?
+                       profile.profile.doValidation: false;
+
+    if (doValidation) {
+      let validationErr = await validateResource(bundle);
+      if (validationErr) {
+        throw new Error(JSON.stringify(validationErr));
+      }
+    }
+
     // return convert result or upload to FHIR server
     if (profile.profile.action === "return") {
       return bundle;
@@ -180,6 +192,33 @@ class Convert {
         });
       return result.data;
     }
+  }
+}
+
+async function validateResource(convertedBundle) {
+  let entryList = convertedBundle.entry;
+  for (let i = 0 ; i < entryList.length ; i++) {
+    let entry = entryList[i];
+    let resource = Object.prototype.hasOwnProperty.call(entry, "resource") ? entry.resource : undefined;
+    if (resource) {
+      let operationOutcomeStr;
+
+      let meta = Object.prototype.hasOwnProperty.call(entry, "meta") ? entry.meta : undefined;
+      if (meta) {
+        let profile = Object.prototype.hasOwnProperty.call(meta, "profile") ? meta.profile.join(",") : undefined;
+        operationOutcomeStr = await fhirValidator.validateResource(JSON.stringify(resource), profile);
+      }
+      operationOutcomeStr = await fhirValidator.validateResource(JSON.stringify(resource), undefined);
+     
+      let operationOutcome = JSON.parse(operationOutcomeStr);
+      if (Object.prototype.hasOwnProperty.call(operationOutcome, "issue")) {
+        let isError = operationOutcome.issue.some( v => v.severity === "error");
+        if (isError)
+          return operationOutcome;
+        return undefined;
+      }
+    }
+    return undefined;
   }
 }
 
