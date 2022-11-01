@@ -22,6 +22,6 @@ module.exports.custom = {
     err: {
       responseType: 'err'
     }
-  }
-
+  },
+  cacheProfile: true
 };
