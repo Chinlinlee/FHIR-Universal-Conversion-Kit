@@ -24,5 +24,13 @@ module.exports.custom = {
     }
   },
   cacheProfile: false,
-  useJavaFhirValidator: false
+  javaFhirValidator: {
+    enable: false,
+    preLoadIGs: [
+      {
+        name: "hl7.fhir.uv.ips",
+        version: "1.0.0"
+      }
+    ]
+  }
 };

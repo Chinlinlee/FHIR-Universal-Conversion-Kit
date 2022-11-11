@@ -19,4 +19,5 @@ fhirProfileFiles.forEach(async (file) => {
   }
 });
 
+/** @type {import("node-java-fhir-validator")} */
 module.exports = validator;

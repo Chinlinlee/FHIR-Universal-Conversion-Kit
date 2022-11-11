@@ -14,7 +14,7 @@ const fs = require("fs");
 const path = require("path");
 
 let fhirValidator;
-if (sails.config.custom.useJavaFhirValidator) {
+if (sails.config.custom.javaFhirValidator.enable) {
   fhirValidator = require("../validator");
 }
   
