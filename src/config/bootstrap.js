@@ -1,5 +1,3 @@
-const validator = require("../lib/validator");
-
 /**
  * Seed Function
  * (sails.config.bootstrap)
@@ -30,10 +28,10 @@ module.exports.bootstrap = async function () {
   
   //initialize fhir validator when start up
   if (sails.config.custom.javaFhirValidator.enable) {
-    require("../lib/validator");
+    const validator = require("../lib/validator");
 
-    for (let ig of preLoadIGs) {
-      await validator.loadIg(ig.name, ig.version)
+    for (let ig of sails.config.custom.javaFhirValidator.preLoadIGs) {
+      await validator.loadIg(ig.name, ig.version);
     }
   }
 };
